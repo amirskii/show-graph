@@ -5,6 +5,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface MainViewModel {
     val uiState: Flow<MainUiState>
+    val events: Flow<MainEvents>
     fun getPoints(count: Int)
 }
 
@@ -13,3 +14,7 @@ data class MainUiState(
     val loading: Boolean = false,
     val error: String? = null
 )
+
+sealed class MainEvents {
+    data class navigateToChartEvent(val count: Int) : MainEvents()
+}

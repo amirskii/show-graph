@@ -14,9 +14,9 @@ class FetchPointsUseCaseImpl(
     private val defaultDispatcher: CoroutineDispatcher
 ) : FetchPointsUseCase {
 
-    override fun invoke(count: Int): Flow<Resource<List<Point>>> = flow {
+    override fun invoke(count: Int, useCache: Boolean): Flow<Resource<List<Point>>> = flow {
         emit(Resource.Loading())
-        val data = pointsRepository.getPoints(count).sortedBy { it.x }
+        val data = pointsRepository.fetchPoints(count, useCache).sortedBy { it.x }
         emit(Resource.Success(data))
     }.catch {
         emit(Resource.Error(it.message ?: "unknown error"))

@@ -10,5 +10,19 @@
         android:id="@+id/mainFragment"
         android:name="com.example.showgraph.presentation.main.MainFragment"
         android:label="fragment_users"
-        tools:layout="@layout/fragment_main" />
+        tools:layout="@layout/fragment_main" >
+        <action
+            android:id="@+id/to_chartFragment"
+            app:destination="@id/chartFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/chartFragment"
+        android:name="com.example.showgraph.presentation.chart.ChartFragment"
+        tools:layout="@layout/fragment_chart"
+        android:label="ChartFragment">
+        <argument
+            android:name="count"
+            app:argType="integer" />
+    </fragment>
 </navigation>

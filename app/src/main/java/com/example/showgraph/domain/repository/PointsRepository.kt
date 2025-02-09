@@ -4,5 +4,5 @@ import com.example.showgraph.domain.model.Point
 
 
 interface PointsRepository {
-    suspend fun getPoints(count: Int): List<Point>
+    suspend fun fetchPoints(count: Int, useCache: Boolean): List<Point>
 }

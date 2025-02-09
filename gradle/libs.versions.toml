@@ -17,6 +17,7 @@ activity = "1.8.0"
 constraintlayout = "2.1.4"
 mpandroidchart = "v3.1.0"
 navigationFragmentKtx = "2.8.6"
+androidx-navigation = "2.7.7"
 retrofit = "2.11.0"
 volley = "1.2.1"
 
@@ -44,4 +45,5 @@ volley = { group = "com.android.volley", name = "volley", version.ref = "volley"
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+navigation-safeargs = { id = "androidx.navigation.safeargs.kotlin", version.ref = "navigationFragmentKtx" }
 

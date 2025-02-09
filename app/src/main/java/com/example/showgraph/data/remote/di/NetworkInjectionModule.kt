@@ -12,7 +12,7 @@ object NetworkInjectionModule {
 
     val module = module {
 
-        factory<PointsRepository> {
+        single <PointsRepository> {
             PointsRepositoryImpl(
                 api = get()
             )

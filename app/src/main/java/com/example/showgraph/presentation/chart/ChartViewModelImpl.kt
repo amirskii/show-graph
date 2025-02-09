@@ -1,32 +1,28 @@
-package com.example.showgraph.presentation.main
+package com.example.showgraph.presentation.chart
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.showgraph.domain.model.Resource
 import com.example.showgraph.domain.usecase.FetchPointsUseCase
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class MainViewModelImpl(
+class ChartViewModelImpl(
+    private val count: Int,
     private val fetchPointsUseCase: FetchPointsUseCase
-) : MainViewModel, ViewModel() {
+) : ChartViewModel, ViewModel() {
 
-    override val uiState = MutableStateFlow(MainUiState())
-    private val eventsChannel = Channel<MainEvents>()
-    override val events: Flow<MainEvents> = eventsChannel.receiveAsFlow()
+    override val uiState = MutableStateFlow(ChartUiState())
 
-    override fun getPoints(count: Int) {
+    init {
         viewModelScope.launch {
-            fetchPointsUseCase.invoke(count).collect {
+            fetchPointsUseCase.invoke(count, useCache = true).collect {
                 uiState.update { state ->
                     when (it) {
                         is Resource.Success -> {
-                            eventsChannel.send(MainEvents.navigateToChartEvent(count))
                             state.copy(
+                                points = it.data,
                                 loading = false,
                                 error = null
                             )

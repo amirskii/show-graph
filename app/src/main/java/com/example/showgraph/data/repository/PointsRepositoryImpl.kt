@@ -7,10 +7,17 @@ import com.example.showgraph.domain.repository.PointsRepository
 class PointsRepositoryImpl(
     private val api: PointsApi
 ) : PointsRepository {
-    override suspend fun getPoints(count: Int): List<Point> {
-        // map to domain to models
-        return api.getPoints(count)
-            .points.map { Point(it.x, it.y) }
-    }
+    // simple memory cache
+    private val cache = mutableListOf<Point>()
 
+    override suspend fun fetchPoints(count: Int, useCache: Boolean): List<Point> {
+        return if (useCache && cache.isNotEmpty()) cache else api.getPoints(count)
+            // map to domain to models
+            .points.map { Point(it.x, it.y) }
+            // cache
+            .also {
+                cache.clear()
+                cache.addAll(it)
+            }
+    }
 }

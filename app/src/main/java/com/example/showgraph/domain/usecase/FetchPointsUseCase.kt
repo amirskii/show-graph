@@ -6,5 +6,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface FetchPointsUseCase {
 
-    operator fun invoke(count: Int): Flow<Resource<List<Point>>>
+    operator fun invoke(count: Int, useCache: Boolean = false): Flow<Resource<List<Point>>>
 }

@@ -1,4 +1,4 @@
-package com.example.showgraph.presentation.main.adapter
+package com.example.showgraph.presentation.chart.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

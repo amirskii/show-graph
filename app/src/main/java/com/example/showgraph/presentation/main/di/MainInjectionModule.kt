@@ -1,4 +1,4 @@
-package com.example.showgraph.presentation.di
+package com.example.showgraph.presentation.main.di
 
 import com.example.showgraph.presentation.main.MainViewModelImpl
 import com.example.showgraph.domain.usecase.FetchPointsUseCase
