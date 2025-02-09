@@ -3,7 +3,6 @@ package com.example.showgraph.data.remote.di
 import com.example.showgraph.data.remote.PointsApi
 import com.example.showgraph.data.repository.PointsRepositoryImpl
 import com.example.showgraph.domain.repository.PointsRepository
-import kotlinx.coroutines.Dispatchers
 import okhttp3.OkHttpClient
 import org.koin.dsl.module
 import retrofit2.Retrofit
@@ -15,8 +14,7 @@ object NetworkInjectionModule {
 
         factory<PointsRepository> {
             PointsRepositoryImpl(
-                api = get(),
-                defaultDispatcher = Dispatchers.IO
+                api = get()
             )
         }
 

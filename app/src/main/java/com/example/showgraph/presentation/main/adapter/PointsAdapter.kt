@@ -4,8 +4,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
-import com.example.showgraph.data.remote.Point
 import com.example.showgraph.databinding.ItemPointBinding
+import com.example.showgraph.domain.model.Point
 import com.example.showgraph.presentation.base.BaseViewHolder
 
 internal class PointsAdapter(

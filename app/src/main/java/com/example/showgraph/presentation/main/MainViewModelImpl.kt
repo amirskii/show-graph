@@ -2,51 +2,46 @@ package com.example.showgraph.presentation.main
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.showgraph.domain.repository.PointsRepository
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.Flow
+import com.example.showgraph.domain.model.Resource
+import com.example.showgraph.domain.usecase.FetchPointsUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class MainViewModelImpl(
-    private val pointsRepository: PointsRepository
+    private val fetchPointsUseCase: FetchPointsUseCase
 ) : MainViewModel, ViewModel() {
 
     override val uiState = MutableStateFlow(MainUiState())
 
-    private val eventsChannel = Channel<MainEvents>()
-    override val events: Flow<MainEvents> = eventsChannel.receiveAsFlow()
-
     override fun getPoints(count: Int) {
-        uiState.update { state ->
-            state.copy(
-                loading = true,
-                points = null
-            )
-        }
         viewModelScope.launch {
-            pointsRepository.getPoints(count)
-                .catch {
-                    uiState.update { state -> state.copy(
-                        error = it.message ?: "Unknown error",
-                        loading = false
-                    ) }
-                }
-                .onEach { payload ->
-                    uiState.update { state ->
-                        state.copy(
-                            points = payload.data,
-                            loading = false,
-                            error = null
-                        )
+            fetchPointsUseCase.invoke(count).collect {
+                uiState.update { state ->
+                    when (it) {
+                        is Resource.Success -> {
+                            state.copy(
+                                points = it.data,
+                                loading = false,
+                                error = null
+                            )
+                        }
+
+                        is Resource.Error -> {
+                            state.copy(
+                                loading = false,
+                                error = it.message
+                            )
+                        }
+
+                        is Resource.Loading -> {
+                            state.copy(
+                                loading = true
+                            )
+                        }
                     }
                 }
-                .collect()
+            }
         }
     }
 

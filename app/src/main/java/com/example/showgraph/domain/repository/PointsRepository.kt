@@ -1,10 +1,8 @@
 package com.example.showgraph.domain.repository
 
-import com.example.showgraph.data.remote.Point
-import com.example.showgraph.domain.model.Resource
-import kotlinx.coroutines.flow.Flow
+import com.example.showgraph.domain.model.Point
 
 
 interface PointsRepository {
-    fun getPoints(count: Int): Flow<Resource<List<Point>>>
+    suspend fun getPoints(count: Int): List<Point>
 }

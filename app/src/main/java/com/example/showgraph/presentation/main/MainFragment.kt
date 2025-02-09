@@ -1,9 +1,7 @@
 package com.example.showgraph.presentation.main
 
-import android.graphics.Bitmap
 import android.graphics.Color
 import android.os.Bundle
-import android.os.Environment
 import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.Lifecycle
@@ -18,9 +16,6 @@ import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
 
 class MainFragment : BaseFragment<FragmentMainBinding>(
     FragmentMainBinding::inflate
@@ -41,11 +36,11 @@ class MainFragment : BaseFragment<FragmentMainBinding>(
         with(binding) {
             recyclerView.adapter = adapter
             button.setOnClickListener {
-                val count = editText.text.toString().toIntOrNull()
-                if (count != null && count > 0) {
+                val count = editText.text.toString().toIntOrNull() ?: 0
+                if (count > 0) {
                     viewModel.getPoints(count)
                 } else {
-                    Toast.makeText(requireContext(), "Введите корректное число точек", Toast.LENGTH_SHORT).show()
+                    showError("Введите корректное число точек")
                 }
             }
         }
@@ -59,38 +54,19 @@ class MainFragment : BaseFragment<FragmentMainBinding>(
 
                     state.points?.let {
                         adapter.submitList(it)
-//                        it.sortBy { it.first }
-//                        setupRecyclerView(points)
-                        val entries = it.toMutableList().sortedBy { it.x }.map {
+                        val entries = it.map {
                             Entry(it.x, it.y)
                         }
                         setupChart(entries)
                     }
 
-//                    showUserDetails(state.userDetails)
-
                     if (!state.error.isNullOrBlank()) {
-//                        showError(state.error)
-                    }
-                }
-            }
-        }
-
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.events.collect {
-                    if (it is MainEvents.ErrorEvent) {
-//                        showError(it.message)
+                        showError(state.error)
                     }
                 }
             }
         }
     }
-
-//    private fun showUserDetails(userDetails: UserDetails?) {
-//        with(binding) {
-//        }
-//    }
 
     private fun setupChart(entries: List<Entry>) {
         val dataSet = LineDataSet(entries, "График координат").apply {
@@ -123,20 +99,20 @@ class MainFragment : BaseFragment<FragmentMainBinding>(
         }
     }
 
-    private fun saveChartAsImage() {
-        with(binding) {
-            val bitmap = chart.chartBitmap
-                val file = File(Environment.getExternalStorageDirectory(Environment.DIRECTORY_PICTURES), "chart.png")
-            try {
-                val outputStream = FileOutputStream(file)
-                bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
-                outputStream.flush()
-                outputStream.close()
-                showMessage("График сохранён: ${file.absolutePath}")
-            } catch (e: IOException) {
-                e.printStackTrace()
-                showError("Ошибка сохранения графика")
-            }
-        }
-    }
+//    private fun saveChartAsImage() {
+//        with(binding) {
+//            val bitmap = chart.chartBitmap
+//                val file = File(Environment.getExternalStorageDirectory(Environment.DIRECTORY_PICTURES), "chart.png")
+//            try {
+//                val outputStream = FileOutputStream(file)
+//                bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+//                outputStream.flush()
+//                outputStream.close()
+//                showMessage("График сохранён: ${file.absolutePath}")
+//            } catch (e: IOException) {
+//                e.printStackTrace()
+//                showError("Ошибка сохранения графика")
+//            }
+//        }
+//    }
 }
