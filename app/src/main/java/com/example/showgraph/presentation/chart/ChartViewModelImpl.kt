@@ -20,11 +20,10 @@ class ChartViewModelImpl(
 
     init {
         viewModelScope.launch {
-            fetchPointsUseCase.invoke(count, useCache = true).collect {
+            fetchPointsUseCase(count, useCache = true).collect {
                 uiState.update { state ->
                     when (it) {
                         is Resource.Success -> {
-
                             state.copy(
                                 points = it.data?.let(chartDataPmMapper::map),
                                 loading = false,

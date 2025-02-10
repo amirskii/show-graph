@@ -21,7 +21,7 @@ class MainViewModelImpl(
 
     override fun getPoints(count: Int) {
         viewModelScope.launch {
-            fetchPointsUseCase.invoke(count).collect {
+            fetchPointsUseCase(count).collect {
                 uiState.update { state ->
                     when (it) {
                         is Resource.Success -> {

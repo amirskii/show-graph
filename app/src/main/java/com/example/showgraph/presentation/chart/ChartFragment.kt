@@ -4,8 +4,8 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
-import android.os.Environment
 import android.view.View
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -14,20 +14,16 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.navArgs
 import com.example.showgraph.databinding.FragmentChartBinding
+import com.example.showgraph.framework.BitmapSaver
 import com.example.showgraph.presentation.base.BaseFragment
 import com.example.showgraph.presentation.chart.adapter.PointsAdapter
 import com.github.mikephil.charting.components.Description
-import com.github.mikephil.charting.components.XAxis
-import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
-import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
 
 class ChartFragment : BaseFragment<FragmentChartBinding>(
     FragmentChartBinding::inflate
@@ -104,27 +100,37 @@ class ChartFragment : BaseFragment<FragmentChartBinding>(
     }
 
     private fun saveChartAsImage() {
-        with(binding) {
-            val bitmap = chart.chartBitmap
-                val file = File(Environment.getExternalStorageDirectory(), "chart.png")
-            try {
-                val outputStream = FileOutputStream(file)
-                bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
-                outputStream.flush()
-                outputStream.close()
-                showMessage("График сохранён: ${file.absolutePath}")
-            } catch (e: IOException) {
-                e.printStackTrace()
-                showError("Ошибка сохранения графика")
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                with(binding) {
+                    val bitmap = chart.chartBitmap
+                    val fileName = "saved_image.png"
+                    BitmapSaver.saveBitmap(
+                        context = requireContext(),
+                        bitmap = bitmap,
+                        format = Bitmap.CompressFormat.PNG,
+                        quality = 100,
+                        fileName = fileName
+                    ).getOrNull()?.let {
+                        showMessage("График сохранён")
+                    }
+                }
             }
         }
     }
+
+    private val permission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        Manifest.permission.READ_MEDIA_IMAGES
+    } else {
+        Manifest.permission.WRITE_EXTERNAL_STORAGE
+    }
+
     private fun checkStoragePermission(): Boolean {
-        return ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+        return ContextCompat.checkSelfPermission(requireContext(), permission) == PackageManager.PERMISSION_GRANTED
     }
 
     private fun requestStoragePermission() {
-        ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), REQUEST_STORAGE_PERMISSION)
+        ActivityCompat.requestPermissions(requireActivity(), arrayOf(permission), REQUEST_STORAGE_PERMISSION)
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
@@ -137,6 +143,7 @@ class ChartFragment : BaseFragment<FragmentChartBinding>(
             }
         }
     }
+
     private companion object {
         const val REQUEST_STORAGE_PERMISSION = 1001
     }
