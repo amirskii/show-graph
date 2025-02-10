@@ -1,6 +1,6 @@
 package com.example.showgraph.presentation.chart
 
-import com.example.showgraph.domain.model.Point
+import com.example.showgraph.presentation.model.ChartDataPm
 import kotlinx.coroutines.flow.Flow
 
 interface ChartViewModel {
@@ -8,7 +8,7 @@ interface ChartViewModel {
 }
 
 data class ChartUiState(
-    val points: List<Point>? = null,
+    val points: ChartDataPm? = null,
     val loading: Boolean = false,
     val error: String? = null
 )

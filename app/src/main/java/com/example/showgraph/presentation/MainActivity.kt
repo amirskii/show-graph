@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.Request
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
-import com.example.showgraph.PointsAdapter
 import com.example.showgraph.R
 import com.example.showgraph.databinding.ActivityMainBinding
 import com.github.mikephil.charting.charts.LineChart
