@@ -1,10 +1,14 @@
 package com.example.showgraph.presentation.chart
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Environment
 import android.view.View
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -48,7 +52,15 @@ class ChartFragment : BaseFragment<FragmentChartBinding>(
             chart.setScaleEnabled(true)
             chart.setPinchZoom(true)
             chart.description = Description().apply { text = "Координаты точек" }
-            recyclerView.adapter = adapter
+            coordinatesRecyclerView.adapter = adapter
+
+            saveChart.setOnClickListener {
+                if (checkStoragePermission()) {
+                    saveChartAsImage()
+                } else {
+                    requestStoragePermission()
+                }
+            }
         }
     }
 
@@ -106,5 +118,26 @@ class ChartFragment : BaseFragment<FragmentChartBinding>(
                 showError("Ошибка сохранения графика")
             }
         }
+    }
+    private fun checkStoragePermission(): Boolean {
+        return ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+    }
+
+    private fun requestStoragePermission() {
+        ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), REQUEST_STORAGE_PERMISSION)
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == REQUEST_STORAGE_PERMISSION) {
+            if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                saveChartAsImage()
+            } else {
+                showError("Разрешение на запись не предоставлено")
+            }
+        }
+    }
+    private companion object {
+        const val REQUEST_STORAGE_PERMISSION = 1001
     }
 }

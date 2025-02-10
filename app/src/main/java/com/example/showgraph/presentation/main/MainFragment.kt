@@ -25,8 +25,8 @@ class MainFragment : BaseFragment<FragmentMainBinding>(
 
     private fun setupUi() {
         with(binding) {
-            button.setOnClickListener {
-                val count = editText.text.toString().toIntOrNull() ?: 0
+            goButton.setOnClickListener {
+                val count = countEditText.text.toString().toIntOrNull() ?: 0
                 if (count > 0) {
                     viewModel.getPoints(count)
                 } else {
@@ -43,7 +43,7 @@ class MainFragment : BaseFragment<FragmentMainBinding>(
                     binding.progress.isVisible = state.loading
 
                     if (!state.error.isNullOrBlank()) {
-                        binding.errorTextView.text = state.error
+                        binding.errorTextView.text = "Ошибка: ${state.error}"
                     }
                 }
             }
