@@ -64,7 +64,7 @@ class ChartFragment : BaseFragment<FragmentChartBinding>(
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { state ->
-                    state.points?.let {
+                    state.chartData?.let {
                         adapter.submitList(it.points)
                         setupChart(it.chartEntries)
                     }

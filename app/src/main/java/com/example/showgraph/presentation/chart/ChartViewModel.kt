@@ -1,14 +1,14 @@
 package com.example.showgraph.presentation.chart
 
 import com.example.showgraph.presentation.model.ChartDataPm
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
 
 interface ChartViewModel {
-    val uiState: Flow<ChartUiState>
+    val uiState: StateFlow<ChartUiState>
 }
 
 data class ChartUiState(
-    val points: ChartDataPm? = null,
+    val chartData: ChartDataPm? = null,
     val loading: Boolean = false,
     val error: String? = null
 )

@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.showgraph.domain.model.Resource
 import com.example.showgraph.domain.usecase.FetchPointsUseCase
 import com.example.showgraph.presentation.mapper.ChartDataPmMapper
-import com.github.mikephil.charting.data.Entry
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -25,7 +24,7 @@ class ChartViewModelImpl(
                     when (it) {
                         is Resource.Success -> {
                             state.copy(
-                                points = it.data?.let(chartDataPmMapper::map),
+                                chartData = it.data?.let(chartDataPmMapper::map),
                                 loading = false,
                                 error = null
                             )

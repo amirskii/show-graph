@@ -56,8 +56,9 @@ dependencies {
     implementation(libs.androidx.navigation.ui.ktx)
 
     implementation(libs.mpandroidchart)
-    implementation(libs.volley)
     testImplementation(libs.junit)
+    testImplementation(libs.mockk)
+    testImplementation(libs.kotlinx.coroutines.test)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 }
