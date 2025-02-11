@@ -90,13 +90,7 @@ class ChartFragment : BaseFragment<FragmentChartBinding>(
         with(binding) {
             chart.data = lineData
             chart.invalidate()
-            // Customize X and Y axis
-//            val xAxis: XAxis = chart.xAxis
-//            xAxis.position = XAxis.XAxisPosition.BOTTOM
-//            val leftAxis: YAxis = chart.axisLeft
-//            leftAxis.setDrawGridLines(false)
-
-            chart.axisRight.isEnabled = false        }
+        }
     }
 
     private fun saveChartAsImage() {

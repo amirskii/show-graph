@@ -2,7 +2,7 @@ package com.example.showgraph.presentation.chart.di
 
 import com.example.showgraph.presentation.chart.ChartViewModelImpl
 import com.example.showgraph.presentation.mapper.ChartDataPmMapper
-import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
 object ChartInjectionModule {
